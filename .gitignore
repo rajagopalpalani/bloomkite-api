@@ -1,0 +1,37 @@
+# Add any directories, files, or patterns you don't want to be tracked by version control
+
+## MAC OS
+.DS_Store
+
+## Java
+*.class
+
+## maven-release-plugin
+**/release.properties
+**/pom.xml.releaseBackup
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# virtual machine crash logs
+hs_err_pid*
+
+## Eclipse
+.classpath
+.project
+.settings/
+/target/
+/build/
+
+## IBM Eclipse Plug-ins 
+.factorypath
+.apt_generated/
+.metadata
+RemoteSystemsTempFiles/
+dependency-reduced-pom.xml
+WebContent/WEB-INF/iib-web-ext.xml

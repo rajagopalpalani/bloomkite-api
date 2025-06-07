@@ -1,0 +1,11 @@
+INSERT INTO `investor` (`invId`,`fullName`, `displayName`, `dob`, `gender`, `emailId`, `password`, `phoneNumber`, `pincode`, `partyStatusId`, `created`, `updated`,`delete_flag`,`isVerified`,`verifiedBy`,`verified`) values ('INV000000000A','investor','inv','1996-07-10','f', 'inv@gmail.com', '!@AS12as', '9874563219', '645123', 1, '2019-07-17 14:58:28', '2019-08-23 14:25:33', 'N',1,'investor','2019-07-17 14:58:28');
+INSERT INTO `role` (`id`,`name`) VALUES (2,'investor');
+INSERT INTO `secret_key` (`key`) VALUES('EncryptionKeySowise');
+INSERT INTO `partystatus` (`id`,`desc`) VALUES (1,'active');
+INSERT INTO `partystatus` (`id`,`desc`) VALUES (2,'inactive');
+INSERT INTO `party` (`partyStatusId`,`id`,`roleBasedId`,`delete_flag`,`created`,`updated`) VALUES (1,2,'INV000000000A','N', '2019-07-10 12:09:16', '2019-07-10 12:09:16');
+INSERT INTO `invinterest` (`prodId`,`invId`,`scale`,`delete_flag`,`created`,`updated`,`created_by`,`updated_by`) VALUES (1,'INV000000000A',1,'N', '2019-07-17 15:42:46', '2019-07-17 15:47:12','INV000000000A','INV000000000A');
+INSERT INTO `categorytype` (`categoryTypeId`,`desc`) VALUES (1, 'Investments');
+INSERT INTO `category` (`categoryId`, `categoryTypeId`, `desc`) VALUES (1,1,'home loan');
+INSERT INTO `InvRiskProfile` (`invId`,`questionId`,`answerId`,`delete_flag`) VALUES ('INV000000000A',1, 2,'N');
+INSERT INTO `investorsmartid` (`id`) VALUES ('INV000000000A');

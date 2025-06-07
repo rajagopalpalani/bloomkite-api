@@ -1,0 +1,19 @@
+# This file controls the AWS CodeBuild
+version: 0.2
+phases:
+  build:
+    commands:
+    - echo "Building Maven"
+    - mvn clean install
+  post_build:
+    commands:
+    - echo "Preparing war"
+    - ls
+    - cd target && ls  
+    - cd ..
+    - cp target/*.war ./app.war
+    - ls
+artifacts:
+  files:
+    - app.war
+  discard-paths: yes

@@ -1,0 +1,183 @@
+DROP TABLE IF EXISTS `admin`;
+CREATE TABLE `admin` (
+	`adminId` VARCHAR(50) NOT NULL,
+	`emailId` VARCHAR(250) NULL DEFAULT NULL,
+	`name` VARCHAR(100) NULL DEFAULT NULL,
+	`partyStatusId` BIGINT(1) NULL DEFAULT NULL,
+	`created` TIMESTAMP NULL DEFAULT NULL,
+	`updated` TIMESTAMP NULL DEFAULT NULL,
+	`delete_flag` VARCHAR(1) NULL DEFAULT NULL,
+	`password` VARCHAR(50) NULL DEFAULT NULL,
+	`created_by` VARCHAR(50) NULL DEFAULT NULL,
+	`updated_by` VARCHAR(50) NULL DEFAULT NULL,
+	PRIMARY KEY (`adminId`)
+);
+DROP TABLE IF EXISTS `party`;
+CREATE TABLE `party` (
+	`partyId` BIGINT(20) NOT NULL AUTO_INCREMENT,
+	`partyStatusId` INT(1) NULL DEFAULT NULL,
+	`roleBasedId` VARCHAR(20) NULL DEFAULT NULL,
+	`created` TIMESTAMP NULL DEFAULT NULL,
+	`updated` TIMESTAMP NULL DEFAULT NULL,
+	`parentId` VARCHAR(20) NULL DEFAULT NULL,
+	`emailId` VARCHAR(200) NULL DEFAULT NULL,
+	`password` VARCHAR(300) NULL DEFAULT NULL,
+	`userName` VARCHAR(50) NULL DEFAULT NULL,
+	`panNumber` VARCHAR(10) NULL DEFAULT NULL,
+	`phoneNumber` VARCHAR(10) NULL DEFAULT NULL,
+	`delete_flag` VARCHAR(1) NULL DEFAULT NULL,
+	`created_by` VARCHAR(50) NULL DEFAULT NULL,
+	`updated_by` VARCHAR(50) NULL DEFAULT NULL,
+	PRIMARY KEY (`partyId`)
+);
+DROP TABLE IF EXISTS `secret_key`;
+CREATE TABLE `secret_key` (
+	`key` VARCHAR(50) NULL DEFAULT NULL
+);
+DROP TABLE IF EXISTS `adminsmartid`;
+CREATE TABLE `adminsmartid` (
+	`s_no` INT(20) NOT NULL AUTO_INCREMENT,
+	`id` VARCHAR(20) NOT NULL,
+	PRIMARY KEY (`s_no`)
+);
+DROP TABLE IF EXISTS `acctype`;
+CREATE TABLE `acctype` (
+	`AccTypeId` INT(11) NOT NULL AUTO_INCREMENT,
+	`AccType` VARCHAR(255) NULL DEFAULT NULL,
+	PRIMARY KEY (`AccTypeId`)
+);
+DROP TABLE IF EXISTS `remuneration`;
+CREATE TABLE `remuneration` (
+	`remId` BIGINT(20) NOT NULL AUTO_INCREMENT,
+	`remuneration` VARCHAR(100) NULL DEFAULT NULL,
+	PRIMARY KEY (`remId`)
+);
+DROP TABLE IF EXISTS `state`;
+CREATE TABLE `state` (
+	`stateId` BIGINT(20) NOT NULL AUTO_INCREMENT,
+	`state` VARCHAR(50) NULL DEFAULT NULL,
+	PRIMARY KEY (`stateId`)
+);
+DROP TABLE IF EXISTS `workflowstatus`;
+CREATE TABLE `workflowstatus` (
+	`workflowId` BIGINT(20) NOT NULL AUTO_INCREMENT,
+	`status` VARCHAR(50) NULL DEFAULT NULL,
+	PRIMARY KEY (`workflowId`)
+);
+DROP TABLE IF EXISTS `service`;
+CREATE TABLE `service` (
+	`serviceId` BIGINT(20) NOT NULL AUTO_INCREMENT,
+	`service` VARCHAR(100) NULL DEFAULT NULL,
+	`prodId` BIGINT(20) NULL DEFAULT NULL,
+	PRIMARY KEY (`serviceId`)
+	);
+DROP TABLE IF EXISTS `advtypes`;
+CREATE TABLE `advtypes` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`advType` VARCHAR(10) NULL DEFAULT NULL,
+	PRIMARY KEY (`id`)
+);
+DROP TABLE IF EXISTS `followerstatus`;
+CREATE TABLE `followerstatus` (
+	`followerStatusId` BIGINT(20) NOT NULL AUTO_INCREMENT,
+	`status` VARCHAR(50) NOT NULL DEFAULT '0',
+	PRIMARY KEY (`followerStatusId`)
+);
+DROP TABLE IF EXISTS `priorityitem`;
+CREATE TABLE `priorityitem` (
+	`priorityItemId` INT(3) NOT NULL AUTO_INCREMENT,
+	`priorityItem` VARCHAR(200) NULL DEFAULT NULL,
+	PRIMARY KEY (`priorityItemId`)
+);
+DROP TABLE IF EXISTS `riskportfolio`;
+CREATE TABLE `riskportfolio` (
+	`riskPortfolioId` INT(3) NOT NULL AUTO_INCREMENT,
+	`points` VARCHAR(20) NULL DEFAULT NULL,
+	`behaviour` VARCHAR(50) NULL DEFAULT NULL,
+	`equity` INT(3) NOT NULL,
+	`debt` INT(3) NOT NULL,
+	`cash` INT(3) NOT NULL,
+	PRIMARY KEY (`riskPortfolioId`)
+);
+DROP TABLE IF EXISTS `license`;
+CREATE TABLE `license` (
+	`licId` BIGINT(20) NOT NULL AUTO_INCREMENT,
+	`license` VARCHAR(100) NULL DEFAULT NULL,
+	`issuedBy` VARCHAR(100) NULL DEFAULT NULL,
+	`prodId` BIGINT(20) NULL DEFAULT NULL,
+	PRIMARY KEY (`licId`)
+);
+DROP TABLE IF EXISTS `products`;
+CREATE TABLE `products` (
+	`prodId` BIGINT(20) NOT NULL AUTO_INCREMENT,
+	`product` VARCHAR(100) NULL DEFAULT NULL,
+	PRIMARY KEY (`prodId`)
+);
+DROP TABLE IF EXISTS `articlestatus`;
+CREATE TABLE `articlestatus` (
+	`id` INT(2) NOT NULL AUTO_INCREMENT,
+	`desc` VARCHAR(50) NULL DEFAULT NULL,
+	PRIMARY KEY (`id`)
+);
+DROP TABLE IF EXISTS `cashflowitemtype`;
+CREATE TABLE `cashflowitemtype` (
+	`cashFlowItemTypeId` INT(3) NOT NULL AUTO_INCREMENT,
+	`cashFlowItemType` VARCHAR(200) NULL DEFAULT NULL,
+	PRIMARY KEY (`cashFlowItemTypeId`)
+);
+DROP TABLE IF EXISTS `cashflowitem`;
+CREATE TABLE `cashflowitem` (
+	`cashFlowItemId` INT(3) NOT NULL AUTO_INCREMENT,
+	`cashFlowItem` VARCHAR(200) NULL DEFAULT NULL,
+	`cashFlowItemTypeId` INT(3) NULL DEFAULT NULL,
+	PRIMARY KEY (`cashFlowItemId`)
+);
+DROP TABLE IF EXISTS `city`;
+CREATE TABLE `city` (
+	`cityId` BIGINT(20) NOT NULL AUTO_INCREMENT,
+	`stateId` BIGINT(20) NULL DEFAULT NULL,
+	`city` VARCHAR(100) NULL DEFAULT NULL,
+	`pincode` VARCHAR(6) NULL DEFAULT NULL,
+	`district` VARCHAR(100) NULL DEFAULT NULL,
+	PRIMARY KEY (`cityId`)
+);
+DROP TABLE IF EXISTS `urgency`;
+CREATE TABLE `urgency` (
+	`urgencyId` INT(3) NOT NULL AUTO_INCREMENT,
+	`value` VARCHAR(20) NULL DEFAULT NULL,
+	PRIMARY KEY (`urgencyId`)
+);
+DROP TABLE IF EXISTS `account`;
+CREATE TABLE `account` (
+	`accountEntryId` INT(3) NOT NULL AUTO_INCREMENT,
+	`accountEntry` VARCHAR(200) NULL DEFAULT NULL,
+	`accountTypeId` INT(3) NOT NULL,
+	PRIMARY KEY (`accountEntryId`)
+	);
+DROP TABLE IF EXISTS `brand`;
+CREATE TABLE `brand` (
+	`brandId` BIGINT(20) NOT NULL AUTO_INCREMENT,
+	`prodId` BIGINT(20) NOT NULL DEFAULT '0',
+	`brand` VARCHAR(100) NULL DEFAULT NULL,
+	PRIMARY KEY (`brandId`)
+);
+DROP TABLE IF EXISTS `votetype`;
+CREATE TABLE `votetype` (
+	`id` INT(2) NOT NULL AUTO_INCREMENT,
+	`desc` VARCHAR(10) NULL DEFAULT NULL,
+	PRIMARY KEY (`id`)
+);
+
+DROP TABLE IF EXISTS `insuranceitem`;
+CREATE TABLE `insuranceitem` (
+	`insuranceItemId` INT(3) NOT NULL AUTO_INCREMENT,
+	`insuranceItem` VARCHAR(50) NULL DEFAULT NULL,
+	`value` VARCHAR(100) NULL DEFAULT NULL,
+	PRIMARY KEY (`insuranceItemId`)
+);
+DROP TABLE IF EXISTS `usertype`;
+CREATE TABLE `usertype` (
+	`id` BIGINT(20) NOT NULL AUTO_INCREMENT,
+	`desc` VARCHAR(50) NULL DEFAULT NULL,
+	PRIMARY KEY (`id`)
+);

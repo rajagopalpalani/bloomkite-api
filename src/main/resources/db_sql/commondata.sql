@@ -1,0 +1,1 @@
+INSERT INTO `mailmessage` (`to`,`subject`,`message`,`fromUser`,`noOfAttempt`) values ('abc@gmail.com','subject','message','fromUser',0)

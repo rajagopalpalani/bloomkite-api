@@ -1,0 +1,220 @@
+DROP TABLE IF EXISTS `articlevoteaddress`;
+DROP TABLE IF EXISTS `articlevote`;
+DROP TABLE IF EXISTS `articlepost`;
+DROP TABLE IF EXISTS `articlecomment`;
+DROP TABLE IF EXISTS `party`;
+DROP TABLE IF EXISTS `forumsubcategory`;
+DROP TABLE IF EXISTS `forumcategory`;
+DROP TABLE IF EXISTS `forumstatus`;
+DROP TABLE IF EXISTS `role`;
+DROP TABLE IF EXISTS `votetype`;
+DROP TABLE IF EXISTS `articlestatus`;
+
+CREATE TABLE `forumstatus` (
+	`id` INT(2) NOT NULL AUTO_INCREMENT,
+	`desc` VARCHAR(50) NULL DEFAULT NULL,
+	PRIMARY KEY (`id`)
+);
+CREATE TABLE `articlecomment` (
+	`commentId` INT(20) NOT NULL AUTO_INCREMENT,
+	`articleId` BIGINT(20) NULL DEFAULT NULL,
+	`partyId` BIGINT(20) NULL DEFAULT NULL,
+	`parentCommentId` BIGINT(20) NULL DEFAULT '0',
+	`name` VARCHAR(50) NULL DEFAULT NULL,
+	`designation` VARCHAR(50) NULL DEFAULT NULL,
+	`imagePath` VARCHAR(500) NULL DEFAULT NULL,
+	`content` VARCHAR(700) NULL DEFAULT NULL,
+	`created` TIMESTAMP NULL DEFAULT NULL,
+	`forumStatusId` INT(11) NULL DEFAULT NULL,
+	`updated` TIMESTAMP NULL DEFAULT NULL,
+	`adminId` VARCHAR(20) NULL DEFAULT NULL,
+	`delete_flag` VARCHAR(1) NULL DEFAULT NULL,
+	`created_by` VARCHAR(50) NULL DEFAULT NULL,
+	`updated_by` VARCHAR(50) NULL DEFAULT NULL,
+	PRIMARY KEY (`commentId`)
+);
+ALTER TABLE `articlecomment`
+    ADD FOREIGN KEY (forumStatusId) 
+    REFERENCES `forumstatus`(id);
+CREATE TABLE `forumcategory` (
+	`forumCategoryId` INT(3) NOT NULL AUTO_INCREMENT,
+	`name` VARCHAR(100) NULL DEFAULT NULL,
+	PRIMARY KEY (`forumCategoryId`)
+);
+CREATE TABLE `forumsubcategory` (
+	`forumSubCategoryId` INT(3) NOT NULL AUTO_INCREMENT,
+	`forumcategoryId` INT(3) NULL DEFAULT NULL,
+	`name` VARCHAR(100) NULL DEFAULT NULL,
+	PRIMARY KEY (`forumSubCategoryId`)
+);
+ALTER TABLE `forumsubcategory`
+    ADD FOREIGN KEY (forumCategoryId) 
+    REFERENCES `forumcategory`(forumCategoryId);
+CREATE TABLE `articlepost` (
+	`articleId` BIGINT(20) NOT NULL AUTO_INCREMENT,
+	`partyId` BIGINT(20) NULL DEFAULT NULL,
+	`name` VARCHAR(50) NULL DEFAULT NULL,
+	`designation` VARCHAR(50) NULL DEFAULT NULL,
+	`imagePath` VARCHAR(500) NULL DEFAULT NULL,
+	`forumCategoryId` INT(3) NOT NULL DEFAULT '0',
+	`forumSubCategoryId` INT(3) NOT NULL DEFAULT '0',
+	`prodId` INT(3) NULL DEFAULT '0',
+	`content` TEXT NULL DEFAULT NULL,
+	`created` TIMESTAMP NULL DEFAULT NULL,
+	`forumStatusId` INT(2) NULL DEFAULT NULL,
+	`updated` TIMESTAMP NULL DEFAULT NULL,
+	`adminId` VARCHAR(50) NULL DEFAULT NULL,
+	`delete_flag` VARCHAR(1) NULL DEFAULT NULL,
+	`reason` VARCHAR(750) NULL DEFAULT NULL,
+	`articleStatusId` INT(11) NULL DEFAULT NULL,
+	`created_by` VARCHAR(50) NULL DEFAULT NULL,
+	`updated_by` VARCHAR(50) NULL DEFAULT NULL,
+	`url` VARCHAR(100) NULL DEFAULT NULL,
+	PRIMARY KEY (`articleId`)
+);
+
+CREATE TABLE `articlevote` (
+	`voteId` BIGINT(20) NOT NULL AUTO_INCREMENT,
+	`articleId` BIGINT(20) NULL DEFAULT NULL,
+	`downCount` INT(11) NULL DEFAULT NULL,
+	`upCount` INT(11) NULL DEFAULT NULL,
+	PRIMARY KEY (`voteId`)
+);
+ALTER TABLE `articlevote`
+    ADD FOREIGN KEY (articleId) 
+    REFERENCES `articlepost`(articleId);
+CREATE TABLE `party` (
+	`partyId` BIGINT(20) NOT NULL AUTO_INCREMENT,
+	`partyStatusId` INT(1) NULL DEFAULT NULL,
+	`roleId` INT(3) NULL DEFAULT NULL,
+	`roleBasedId` VARCHAR(20) NULL DEFAULT NULL,
+	`created` TIMESTAMP NULL DEFAULT NULL,
+	`updated` TIMESTAMP NULL DEFAULT NULL,
+	`delete_flag` VARCHAR(1) NULL DEFAULT NULL,
+	`emailId` VARCHAR(300) NULL DEFAULT NULL,
+	`password` VARCHAR(300) NULL DEFAULT NULL,
+	`parentPartyId` BIGINT(20) NULL DEFAULT NULL,
+	PRIMARY KEY (`partyId`)
+);
+
+CREATE TABLE `articlevoteaddress` (
+	`articleId` BIGINT(20) NULL DEFAULT NULL,
+	`partyId` BIGINT(20) NULL DEFAULT NULL,
+	`voteType` VARCHAR(10) NULL DEFAULT NULL,
+	`created` TIMESTAMP NULL DEFAULT NULL,
+	`updated` TIMESTAMP NULL DEFAULT NULL,
+	`created_by` VARCHAR(50) NULL DEFAULT NULL,
+	`updated_by` VARCHAR(50) NULL DEFAULT NULL
+);
+ALTER TABLE `articlevoteaddress`
+    ADD FOREIGN KEY (articleId) 
+    REFERENCES `articlepost`(articleId);
+CREATE TABLE `role` (
+	`id` INT(3) NOT NULL AUTO_INCREMENT,
+	`name` VARCHAR(50) NULL DEFAULT NULL,
+	PRIMARY KEY (`id`)
+);
+CREATE TABLE `votetype` (
+	`id` INT(2) NOT NULL AUTO_INCREMENT,
+	`desc` VARCHAR(10) NULL DEFAULT NULL,
+	PRIMARY KEY (`id`)
+);
+CREATE TABLE `articlestatus` (
+	`id` INT(2) NOT NULL AUTO_INCREMENT,
+	`desc` VARCHAR(50) NULL DEFAULT NULL,
+	PRIMARY KEY (`id`)
+);
+DROP TABLE IF EXISTS `forumthread`;
+CREATE TABLE `forumthread` (
+	`threadId` BIGINT(20) NOT NULL AUTO_INCREMENT,
+	`partyId` BIGINT(20) NULL DEFAULT '0',
+	`adminId` VARCHAR(50) NULL DEFAULT NULL,
+	`created` TIMESTAMP NULL DEFAULT NULL,
+	`forumStatusId` INT(2) NULL DEFAULT '0',
+	`forumSubCategoryId` INT(3) NULL DEFAULT '0',
+	`subject` VARCHAR(500) NULL DEFAULT NULL,
+	`updated` TIMESTAMP NULL DEFAULT NULL,
+	`forumCategoryId` INT(3) NULL DEFAULT '0',
+	`delete_flag` VARCHAR(1) NULL DEFAULT NULL,
+	`created_by` VARCHAR(50) NULL DEFAULT NULL,
+	`updated_by` VARCHAR(50) NULL DEFAULT NULL,
+	PRIMARY KEY (`threadId`)
+);
+DROP TABLE IF EXISTS `forumpost`;
+CREATE TABLE `forumpost` (
+	`postId` BIGINT(20) NOT NULL AUTO_INCREMENT,
+	`content` VARCHAR(700) NULL DEFAULT NULL,
+	`created` TIMESTAMP NULL DEFAULT NULL,
+	`forumStatusId` INT(2) NULL DEFAULT '0',
+	`partyId` BIGINT(20) NULL DEFAULT '0',
+	`threadId` BIGINT(20) NULL DEFAULT '0',
+	`updated` TIMESTAMP NULL DEFAULT NULL,
+	`adminId` VARCHAR(20) NULL DEFAULT NULL,
+	`delete_flag` VARCHAR(1) NULL DEFAULT NULL,
+	`created_by` VARCHAR(50) NULL DEFAULT NULL,
+	`updated_by` VARCHAR(50) NULL DEFAULT NULL,
+	PRIMARY KEY (`postId`)
+);
+DROP TABLE IF EXISTS `forumpostvote`;
+CREATE TABLE `forumpostvote` (
+	`voteId` BIGINT(20) NOT NULL AUTO_INCREMENT,
+	`downCount` INT(11) NULL DEFAULT NULL,
+	`upCount` INT(11) NULL DEFAULT NULL,
+	`postId` BIGINT(20) NULL DEFAULT NULL,
+	PRIMARY KEY (`voteId`)
+);
+DROP TABLE IF EXISTS `postvoteaddress`;
+CREATE TABLE `postvoteaddress` (
+	`postId` BIGINT(20) NOT NULL,
+	`partyId` BIGINT(20) NOT NULL,
+	`voteType` VARCHAR(10) NOT NULL,
+	`created` TIMESTAMP NULL DEFAULT NULL,
+	`updated` TIMESTAMP NULL DEFAULT NULL,
+	`created_by` VARCHAR(50) NULL DEFAULT NULL,
+	`updated_by` VARCHAR(50) NULL DEFAULT NULL
+);
+DROP TABLE IF EXISTS `forumquery`;
+CREATE TABLE `forumquery` (
+	`queryId` BIGINT(20) NOT NULL AUTO_INCREMENT,
+	`query` TEXT NULL DEFAULT NULL,
+	`partyId` BIGINT(20) NOT NULL DEFAULT '0',
+	`postedToPartyId` BIGINT(20) NOT NULL DEFAULT '0',
+	`forumSubCategoryId` INT(11) NOT NULL DEFAULT '0',
+	`forumCategoryId` INT(11) NOT NULL DEFAULT '0',
+	`created` TIMESTAMP NULL DEFAULT NULL,
+	`updated` TIMESTAMP NULL DEFAULT NULL,
+	`delete_flag` VARCHAR(1) NULL DEFAULT NULL,
+	`created_by` VARCHAR(50) NULL DEFAULT NULL,
+	`updated_by` VARCHAR(50) NULL DEFAULT NULL,
+	PRIMARY KEY (`queryId`)
+);
+DROP TABLE IF EXISTS `forumanswer`;
+CREATE TABLE `forumanswer` (
+	`answerId` BIGINT(20) NOT NULL AUTO_INCREMENT,
+	`queryId` BIGINT(20) NOT NULL DEFAULT '0',
+	`answer` TEXT NULL DEFAULT NULL,
+	`partyId` BIGINT(20) NOT NULL DEFAULT '0',
+	`created` TIMESTAMP NULL DEFAULT NULL,
+	`updated` TIMESTAMP NULL DEFAULT NULL,
+	`delete_flag` VARCHAR(1) NULL DEFAULT NULL,
+	`created_by` VARCHAR(50) NULL DEFAULT NULL,
+	`updated_by` VARCHAR(50) NULL DEFAULT NULL,
+	PRIMARY KEY (`answerId`)
+);
+DROP TABLE IF EXISTS `articlefavorite`;
+CREATE TABLE `articlefavorite` (
+	`favoriteId` BIGINT(20) NOT NULL AUTO_INCREMENT,
+	`partyId` BIGINT(20) NULL DEFAULT '0',
+	`articleId` BIGINT(20) NULL DEFAULT '0',
+	`created` TIMESTAMP NULL DEFAULT NULL,
+	`updated` TIMESTAMP NULL DEFAULT NULL,
+	`created_by` VARCHAR(50) NULL DEFAULT NULL,
+	`updated_by` VARCHAR(50) NULL DEFAULT NULL,
+	`delete_flag` VARCHAR(10) NULL DEFAULT NULL,
+	PRIMARY KEY (`favoriteId`)
+);
+
+
+
+
+

@@ -1,0 +1,6 @@
+[
+    {
+      "name":"bloomkite-api",
+      "imageUri": "508344954051.dkr.ecr.us-east-2.amazonaws.com/bloomkite-api-prod:latest"
+    }
+]
