@@ -29,7 +29,7 @@ public class DBConfig {
 	@Bean
 	public DataSource dataSource() {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-		dataSource.setDriverClassName(env.getProperty("spring.datasource.driver-class"));
+		dataSource.setDriverClassName(env.getProperty("spring.datasource.driver-class-name"));
 		dataSource.setUrl(env.getProperty("spring.datasource.url"));
 		dataSource.setUsername(env.getProperty("spring.datasource.username"));
 		dataSource.setPassword(env.getProperty("spring.datasource.password"));
@@ -40,7 +40,7 @@ public class DBConfig {
 	@Bean
 	public DataSource authDataSource() {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-		dataSource.setDriverClassName(env.getProperty("spring.auth.datasource.driver-class"));
+		dataSource.setDriverClassName(env.getProperty("spring.auth.datasource.driver-class-name"));
 		dataSource.setUrl(env.getProperty("spring.auth.datasource.url"));
 		dataSource.setUsername(env.getProperty("spring.auth.datasource.username"));
 		dataSource.setPassword(env.getProperty("spring.auth.datasource.password"));

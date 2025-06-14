@@ -5,7 +5,7 @@
 	<groupId>com.sowisetech</groupId>
 	<artifactId>advisor</artifactId>
 	<version>1.0.0</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>advisor</name>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -177,12 +177,15 @@
 		<!-- <version>0.9.5.2</version> -->
 		<!-- </dependency> -->
 		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
+		    <groupId>mysql</groupId>
+		    <artifactId>mysql-connector-java</artifactId>
+		    <scope>runtime</scope>
 		</dependency>
+
 		<dependency>
-			<groupId>org.mariadb.jdbc</groupId>
-			<artifactId>mariadb-java-client</artifactId>
+		    <groupId>org.mariadb.jdbc</groupId>
+		    <artifactId>mariadb-java-client</artifactId>
+		    <version>3.3.2</version> <!-- latest as of mid-2025 -->
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.jasypt/jasypt -->
 		<dependency>
@@ -233,7 +236,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.amazonaws</groupId>
@@ -294,11 +296,8 @@
 			<!-- <version>3.7.0.1746</version> -->
 			<!-- </plugin> -->
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<configuration>
-					<failOnMissingWebXml>false</failOnMissingWebXml>
-				</configuration>
+			    <groupId>org.springframework.boot</groupId>
+			    <artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
 
