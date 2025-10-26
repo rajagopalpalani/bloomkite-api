@@ -75,7 +75,7 @@ public class InvestorDaoImpl implements InvestorDao {
 	@Override
 	public List<Investor> fetchInvestor(Pageable pageable, String deleteflag, String encryptPass) {
 		try {
-			String sql = "SELECT * FROM (SELECT inv.`invId` invId,DECODE(inv.`fullName`,?) fullName,inv.`displayName` displayName,DECODE(inv.`dob`,?) dob,DECODE(inv.`emailId`,?) emailId,inv.`gender` gender,inv.`password` password,DECODE(inv.`userName`,?) userName,DECODE(inv.`phoneNumber`,?) phoneNumber,inv.`pincode` pincode,inv.`imagePath` imagePath,inv.`partyStatusId` partyStatusId,inv.`created` created,inv.`updated` updated,inv.`isVerified` isVerified,inv.`verifiedBy` verifiedBy,inv.`verified` verified,inv.`isMobileVerified` isMobileVerified,inv.`delete_flag` delete_flag,invInt.interestId COL_A,invInt.prodId COL_B,invInt.invId COL_INVID,invInt.scale COL_D,invInt.created COL_E,invInt.updated COL_F,invInt.delete_flag COL_DELETEFLAG, 'invInt' VALUE FROM (SELECT * FROM investor WHERE delete_flag = ? ORDER BY created ASC LIMIT "
+			String sql = "SELECT * FROM (SELECT inv.`invId` invId,AES_DECRYPT(inv.`fullName`,?) fullName,inv.`displayName` displayName,AES_DECRYPT(inv.`dob`,?) dob,AES_DECRYPT(inv.`emailId`,?) emailId,inv.`gender` gender,inv.`password` password,AES_DECRYPT(inv.`userName`,?) userName,AES_DECRYPT(inv.`phoneNumber`,?) phoneNumber,inv.`pincode` pincode,inv.`imagePath` imagePath,inv.`partyStatusId` partyStatusId,inv.`created` created,inv.`updated` updated,inv.`isVerified` isVerified,inv.`verifiedBy` verifiedBy,inv.`verified` verified,inv.`isMobileVerified` isMobileVerified,inv.`delete_flag` delete_flag,invInt.interestId COL_A,invInt.prodId COL_B,invInt.invId COL_INVID,invInt.scale COL_D,invInt.created COL_E,invInt.updated COL_F,invInt.delete_flag COL_DELETEFLAG, 'invInt' VALUE FROM (SELECT * FROM investor WHERE delete_flag = ? ORDER BY created ASC LIMIT "
 					+ pageable.getPageSize() + " OFFSET " + pageable.getOffset()
 					+ ") inv LEFT JOIN invinterest invInt ON (inv.invId = invInt.invId)) AS investorList WHERE delete_flag=?";
 			return jdbcTemplate.query(sql, new InvestorListExtractor(deleteflag) {
@@ -231,7 +231,7 @@ public class InvestorDaoImpl implements InvestorDao {
 	@Override
 	public Investor fetchInvestorByInvId(String invId, String deleteflag, String encryptPass) {
 		try {
-			String sql = "SELECT * FROM (SELECT inv.`invId` invId,DECODE(inv.`fullName`,?) fullName,inv.`displayName` displayName,DECODE(inv.`dob`,?) dob,DECODE(inv.`emailId`,?) emailId,inv.`gender` gender,inv.`password` password,DECODE(inv.`userName`,?) userName,DECODE(inv.`phoneNumber`,?) phoneNumber,inv.`pincode` pincode,inv.`imagePath` imagePath,inv.`partyStatusId` partyStatusId,inv.`created` created,inv.`updated` updated, inv.`created_by` created_by,inv.`updated_by` updated_by, inv.`isVerified` isVerified,inv.`verifiedBy` verifiedBy,inv.`verified` verified,inv.`isMobileVerified` isMobileVerified,inv.`delete_flag` delete_flag,invInt.interestId COL_A,invInt.prodId COL_B,invInt.invId COL_INVID,invInt.scale COL_D,invInt.created COL_E,invInt.updated COL_F,  invInt.created_by COL_G,invInt.updated_by COL_H  ,invInt.delete_flag COL_DELETEFLAG, 'invInt' VALUE FROM investor inv LEFT JOIN invinterest invInt ON (inv.invId = invInt.invId)) AS investor WHERE invId=? AND delete_flag=?";
+			String sql = "SELECT * FROM (SELECT inv.`invId` invId,AES_DECRYPT(inv.`fullName`,?) fullName,inv.`displayName` displayName,AES_DECRYPT(inv.`dob`,?) dob,AES_DECRYPT(inv.`emailId`,?) emailId,inv.`gender` gender,inv.`password` password,AES_DECRYPT(inv.`userName`,?) userName,AES_DECRYPT(inv.`phoneNumber`,?) phoneNumber,inv.`pincode` pincode,inv.`imagePath` imagePath,inv.`partyStatusId` partyStatusId,inv.`created` created,inv.`updated` updated, inv.`created_by` created_by,inv.`updated_by` updated_by, inv.`isVerified` isVerified,inv.`verifiedBy` verifiedBy,inv.`verified` verified,inv.`isMobileVerified` isMobileVerified,inv.`delete_flag` delete_flag,invInt.interestId COL_A,invInt.prodId COL_B,invInt.invId COL_INVID,invInt.scale COL_D,invInt.created COL_E,invInt.updated COL_F,  invInt.created_by COL_G,invInt.updated_by COL_H  ,invInt.delete_flag COL_DELETEFLAG, 'invInt' VALUE FROM investor inv LEFT JOIN invinterest invInt ON (inv.invId = invInt.invId)) AS investor WHERE invId=? AND delete_flag=?";
 			return jdbcTemplate.query(sql, new InvestorExtractor(deleteflag), encryptPass, encryptPass, encryptPass,
 					encryptPass, encryptPass, invId, deleteflag);
 		} catch (DataAccessException e) {
@@ -245,7 +245,7 @@ public class InvestorDaoImpl implements InvestorDao {
 	@Override
 	public int update(String invId, Investor investor, String encryptPass) {
 		try {
-			String sql1 = "UPDATE `investor` SET `fullName`=ENCODE(?,?), `displayName`=?, `dob`=ENCODE(?,?), `gender`=?, `pincode`=?, `imagePath`=?, `partyStatusId`=? ,`updated`=?,`updated_by`=? WHERE `invId`=?";
+			String sql1 = "UPDATE `investor` SET `fullName`=AES_ENCRYPT(?,?), `displayName`=?, `dob`=AES_ENCRYPT(?,?), `gender`=?, `pincode`=?, `imagePath`=?, `partyStatusId`=? ,`updated`=?,`updated_by`=? WHERE `invId`=?";
 			int result = jdbcTemplate.update(sql1, investor.getFullName(), encryptPass, investor.getDisplayName(),
 					investor.getDob(), encryptPass, investor.getGender(), investor.getPincode(), investor.getImagePath(),
 					investor.getPartyStatusId(), investor.getUpdated(), investor.getUpdated_by(), invId);
@@ -447,7 +447,7 @@ public class InvestorDaoImpl implements InvestorDao {
 	@Override
 	public int updatePersonalInfoInParty(Investor investor, String advId, String encryptPass) {
 		try {
-			String sql = "UPDATE `party` SET `emailId`=ENCODE(?,?),`phoneNumber`=ENCODE(?,?), `updated`=?,`updated_by`=? WHERE `roleBasedId`=?";
+			String sql = "UPDATE `party` SET `emailId`=AES_ENCRYPT(?,?),`phoneNumber`=AES_ENCRYPT(?,?), `updated`=?,`updated_by`=? WHERE `roleBasedId`=?";
 			int result = jdbcTemplate.update(sql, investor.getEmailId(), encryptPass, investor.getPhoneNumber(),
 					encryptPass, investor.getUpdated(), investor.getUpdated_by(), advId);
 			// System.out.println(result);
@@ -461,7 +461,7 @@ public class InvestorDaoImpl implements InvestorDao {
 	@Override
 	public Party fetchPartyForSignIn(String username, String delete_flag, String encryptPass) {
 		try {
-			String sql = "SELECT `partyId`,`partyStatusId`,`roleBasedId`,`parentPartyId`,DECODE(`emailId`,?) emailId,`password`,DECODE(`userName`,?) userName,DECODE(`phoneNumber`,?) phoneNumber,DECODE(`panNumber`,?) panNumber,`created`,`updated`,`delete_flag`,`created_by`,`updated_by` FROM `party` WHERE `delete_flag`=? AND (DECODE(`emailId`,?) = ? OR DECODE(`panNumber`,?)=? OR DECODE(`phoneNumber`,?)=? OR DECODE(`userName`,?)=?)";
+			String sql = "SELECT `partyId`,`partyStatusId`,`roleBasedId`,`parentPartyId`,AES_DECRYPT(`emailId`,?) emailId,`password`,AES_DECRYPT(`userName`,?) userName,AES_DECRYPT(`phoneNumber`,?) phoneNumber,AES_DECRYPT(`panNumber`,?) panNumber,`created`,`updated`,`delete_flag`,`created_by`,`updated_by` FROM `party` WHERE `delete_flag`=? AND (AES_DECRYPT(`emailId`,?) = ? OR AES_DECRYPT(`panNumber`,?)=? OR AES_DECRYPT(`phoneNumber`,?)=? OR AES_DECRYPT(`userName`,?)=?)";
 			RowMapper<Party> partyMapper = new BeanPropertyRowMapper<Party>(Party.class);
 			return jdbcTemplate.queryForObject(sql, partyMapper, encryptPass, encryptPass, encryptPass, encryptPass,
 					delete_flag, encryptPass, username, encryptPass, username, encryptPass, username, encryptPass,

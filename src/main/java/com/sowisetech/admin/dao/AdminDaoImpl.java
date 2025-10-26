@@ -72,7 +72,7 @@ public class AdminDaoImpl implements AdminDao {
 	@Override
 	public List<Admin> fetchAdminList(String delete_flag, String encryptPass) {
 		try {
-			String sql = "SELECT `adminId`,DECODE(`emailId`,?) emailId,DECODE(`name`,?) name,`password`,`partyStatusId`,`created`,`updated`,`created_by`,`updated_by`,`delete_flag` FROM `admin` WHERE `delete_flag`=?";
+			String sql = "SELECT `adminId`,AES_DECRYPT(`emailId`,?) emailId,AES_DECRYPT(`name`,?) name,`password`,`partyStatusId`,`created`,`updated`,`created_by`,`updated_by`,`delete_flag` FROM `admin` WHERE `delete_flag`=?";
 			RowMapper<Admin> rowMapper = new BeanPropertyRowMapper<Admin>(Admin.class);
 			List<Admin> admin = jdbcTemplate.query(sql, rowMapper, encryptPass, encryptPass, delete_flag);
 			return admin;
@@ -85,7 +85,7 @@ public class AdminDaoImpl implements AdminDao {
 	@Override
 	public Admin fetchAdminByEmailId(String emailId, String encryptPass) {
 		try {
-			String sql = "SELECT `adminId`,DECODE(`emailId`,?) emailId,DECODE(`name`,?) name,`password`,`partyStatusId`,`created`,`updated`,`created_by`,`updated_by`,`delete_flag` FROM `admin` WHERE DECODE(`emailId`,?) = ?";
+			String sql = "SELECT `adminId`,AES_DECRYPT(`emailId`,?) emailId,AES_DECRYPT(`name`,?) name,`password`,`partyStatusId`,`created`,`updated`,`created_by`,`updated_by`,`delete_flag` FROM `admin` WHERE AES_DECRYPT(`emailId`,?) = ?";
 			RowMapper<Admin> rowMapper = new BeanPropertyRowMapper<Admin>(Admin.class);
 			Admin admin = jdbcTemplate.queryForObject(sql, rowMapper, encryptPass, encryptPass, encryptPass, emailId);
 			return admin;
@@ -98,7 +98,7 @@ public class AdminDaoImpl implements AdminDao {
 	@Override
 	public Admin fetchByAdminId(String adminId, String delete_flag, String encryptPass) {
 		try {
-			String sql = "SELECT `adminId`,DECODE(`name`,?) name, DECODE(`emailId`,?) emailId, `partyStatusId`,`created`,`updated`,`created_by`,`updated_by` FROM `admin` WHERE `adminId` = ? AND `delete_flag`=?";
+			String sql = "SELECT `adminId`,AES_DECRYPT(`name`,?) name, AES_DECRYPT(`emailId`,?) emailId, `partyStatusId`,`created`,`updated`,`created_by`,`updated_by` FROM `admin` WHERE `adminId` = ? AND `delete_flag`=?";
 			RowMapper<Admin> rowMapper = new BeanPropertyRowMapper<Admin>(Admin.class);
 			Admin admin = jdbcTemplate.queryForObject(sql, rowMapper, encryptPass, encryptPass, adminId, delete_flag);
 			return admin;
@@ -114,7 +114,7 @@ public class AdminDaoImpl implements AdminDao {
 		ZonedDateTime zdt = ZonedDateTime.now(ZoneId.of("Asia/Calcutta"));
 		Timestamp timestamp = Timestamp.valueOf(zdt.toLocalDateTime());
 		try {
-			String sql = "INSERT INTO `admin` (`adminId`,`name`,`password` ,`emailId`,`partyStatusId`,`created`,`updated`,`delete_flag`,`created_by`,`updated_by`) values (?, ENCODE(?,?),?,ENCODE(?,?),?, ?, ?, ?,?,?)";
+			String sql = "INSERT INTO `admin` (`adminId`,`name`,`password` ,`emailId`,`partyStatusId`,`created`,`updated`,`delete_flag`,`created_by`,`updated_by`) values (?, AES_ENCRYPT(?,?),?,AES_ENCRYPT(?,?),?, ?, ?, ?,?,?)";
 			int result = jdbcTemplate.update(sql, admin.getAdminId(), admin.getName(), encryptPass, admin.getPassword(),
 					admin.getEmailId(), encryptPass, admin.getPartyStatusId(), timestamp, timestamp,
 					admin.getDelete_flag(), admin.getCreated_by(), admin.getUpdated_by());
@@ -131,7 +131,7 @@ public class AdminDaoImpl implements AdminDao {
 		ZonedDateTime zdt = ZonedDateTime.now(ZoneId.of("Asia/Calcutta"));
 		Timestamp timestamp = Timestamp.valueOf(zdt.toLocalDateTime());
 		try {
-			String sqlForPartyInsert = "INSERT INTO `party` (`emailId`,`password`,`partyStatusId`,`roleBasedId`,`created`,`updated`,`delete_flag`,`created_by`,`updated_by`) values (ENCODE(?,?),?,?,?,?, ?, ?,?,?)";
+			String sqlForPartyInsert = "INSERT INTO `party` (`emailId`,`password`,`partyStatusId`,`roleBasedId`,`created`,`updated`,`delete_flag`,`created_by`,`updated_by`) values (AES_ENCRYPT(?,?),?,?,?,?, ?, ?,?,?)";
 			int result = jdbcTemplate.update(sqlForPartyInsert, admin.getEmailId(), encryptPass, admin.getPassword(),
 					admin.getPartyStatusId(), admin.getAdminId(), timestamp, timestamp, admin.getDelete_flag(),
 					admin.getCreated_by(), admin.getUpdated_by());
@@ -160,7 +160,7 @@ public class AdminDaoImpl implements AdminDao {
 			// Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 			ZonedDateTime zdt = ZonedDateTime.now(ZoneId.of("Asia/Calcutta"));
 			Timestamp timestamp = Timestamp.valueOf(zdt.toLocalDateTime());
-			String sql1 = "UPDATE `admin` SET `name`=ENCODE(?,?),`partyStatusId`=? ,`updated` = ?,`updated_by`=? WHERE `adminId`=?";
+			String sql1 = "UPDATE `admin` SET `name`=AES_ENCRYPT(?,?),`partyStatusId`=? ,`updated` = ?,`updated_by`=? WHERE `adminId`=?";
 			int result = jdbcTemplate.update(sql1, admin.getName(), encryptPass, admin.getPartyStatusId(), timestamp,
 					admin.getUpdated_by(), adminId);
 			return result;
@@ -240,7 +240,7 @@ public class AdminDaoImpl implements AdminDao {
 	@Override
 	public Party fetchPartyByEmailId(String emailId, String encryptPass) {
 		try {
-			String sql = "SELECT `partyId`,`partyStatusId`,`roleBasedId`,`parentPartyId`,DECODE(`emailId`,?) emailId,`password`,DECODE(`userName`,?) userName,DECODE(`phoneNumber`,?) phoneNumber,DECODE(`panNumber`,?) panNumber,`created`,`updated`,`delete_flag`,`created_by`,`updated_by` FROM `party` WHERE DECODE(`emailId`,?) = ? ";
+			String sql = "SELECT `partyId`,`partyStatusId`,`roleBasedId`,`parentPartyId`,AES_DECRYPT(`emailId`,?) emailId,`password`,AES_DECRYPT(`userName`,?) userName,AES_DECRYPT(`phoneNumber`,?) phoneNumber,AES_DECRYPT(`panNumber`,?) panNumber,`created`,`updated`,`delete_flag`,`created_by`,`updated_by` FROM `party` WHERE AES_DECRYPT(`emailId`,?) = ? ";
 			RowMapper<Party> rowMapper = new BeanPropertyRowMapper<Party>(Party.class);
 			return jdbcTemplate.queryForObject(sql, rowMapper, encryptPass, encryptPass, encryptPass, encryptPass,
 					encryptPass, emailId);
@@ -269,7 +269,7 @@ public class AdminDaoImpl implements AdminDao {
 	@Override
 	public Party fetchPartyForSignIn(String username, String delete_flag, String encryptPass) {
 		try {
-			String sql = "SELECT `partyId`,`partyStatusId`,`roleBasedId`,`parentPartyId`,DECODE(`emailId`,?) emailId,`password`,DECODE(`userName`,?) userName,DECODE(`phoneNumber`,?) phoneNumber,DECODE(`panNumber`,?) panNumber,`created`,`updated`,`delete_flag`,`created_by`,`updated_by` FROM `party` WHERE `delete_flag`=? AND (DECODE(`emailId`,?) = ? OR DECODE(`panNumber`,?)=? OR DECODE(`phoneNumber`,?)=? OR DECODE(`userName`,?)=?)";
+			String sql = "SELECT `partyId`,`partyStatusId`,`roleBasedId`,`parentPartyId`,AES_DECRYPT(`emailId`,?) emailId,`password`,AES_DECRYPT(`userName`,?) userName,AES_DECRYPT(`phoneNumber`,?) phoneNumber,AES_DECRYPT(`panNumber`,?) panNumber,`created`,`updated`,`delete_flag`,`created_by`,`updated_by` FROM `party` WHERE `delete_flag`=? AND (AES_DECRYPT(`emailId`,?) = ? OR AES_DECRYPT(`panNumber`,?)=? OR AES_DECRYPT(`phoneNumber`,?)=? OR AES_DECRYPT(`userName`,?)=?)";
 			RowMapper<Party> partyMapper = new BeanPropertyRowMapper<Party>(Party.class);
 			return jdbcTemplate.queryForObject(sql, partyMapper, encryptPass, encryptPass, encryptPass, encryptPass,
 					delete_flag, encryptPass, username, encryptPass, username, encryptPass, username, encryptPass,
@@ -283,7 +283,7 @@ public class AdminDaoImpl implements AdminDao {
 	@Override
 	public int checkPartyIsPresent(String emailId, String encryptPass) {
 		try {
-			String sql = "SELECT count(*) FROM `party` WHERE DECODE(`emailId`,?) = ? ";
+			String sql = "SELECT count(*) FROM `party` WHERE AES_DECRYPT(`emailId`,?) = ? ";
 			return jdbcTemplate.queryForObject(sql, Integer.class, encryptPass, emailId);
 		} catch (EmptyResultDataAccessException e) {
 			logger.error(e.getMessage());

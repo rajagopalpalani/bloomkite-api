@@ -317,7 +317,7 @@ public class CalcDaoImpl implements CalcDao {
 	@Override
 	public Party fetchParty(long partyId, String delete_flag, String encryptPass) {
 		try {
-			String sql = "SELECT `partyId`,`partyStatusId`,`roleBasedId`,`parentPartyId`,DECODE(`emailId`,?) emailId,`password`,DECODE(`userName`,?) userName,DECODE(`phoneNumber`,?) phoneNumber,DECODE(`panNumber`,?) panNumber,`created`,`updated`,`delete_flag`,`created_by`,`updated_by` FROM `party` WHERE `partyId`= ? AND `delete_flag`=?";
+			String sql = "SELECT `partyId`,`partyStatusId`,`roleBasedId`,`parentPartyId`,AES_DECRYPT(`emailId`,?) emailId,`password`,AES_DECRYPT(`userName`,?) userName,AES_DECRYPT(`phoneNumber`,?) phoneNumber,AES_DECRYPT(`panNumber`,?) panNumber,`created`,`updated`,`delete_flag`,`created_by`,`updated_by` FROM `party` WHERE `partyId`= ? AND `delete_flag`=?";
 			RowMapper<Party> rowMapper = new BeanPropertyRowMapper<Party>(Party.class);
 			Party party = jdbcTemplate.queryForObject(sql, rowMapper, encryptPass, encryptPass, encryptPass,
 					encryptPass, partyId, delete_flag);
@@ -528,7 +528,7 @@ public class CalcDaoImpl implements CalcDao {
 	@Override
 	public Party fetchPartyIdByRoleBasedId(String id, String delete_flag, String encryptPass) {
 		try {
-			String sql = "SELECT `partyId`,`partyStatusId`,`roleBasedId`,`parentPartyId`,DECODE(`emailId`,?) emailId,`password`,DECODE(`userName`,?) userName,DECODE(`phoneNumber`,?) phoneNumber,DECODE(`panNumber`,?) panNumber,`created`,`updated`,`delete_flag`,`created_by`,`updated_by` FROM `party` WHERE `roleBasedId` = ? AND `delete_flag` = ?";
+			String sql = "SELECT `partyId`,`partyStatusId`,`roleBasedId`,`parentPartyId`,AES_DECRYPT(`emailId`,?) emailId,`password`,AES_DECRYPT(`userName`,?) userName,AES_DECRYPT(`phoneNumber`,?) phoneNumber,AES_DECRYPT(`panNumber`,?) panNumber,`created`,`updated`,`delete_flag`,`created_by`,`updated_by` FROM `party` WHERE `roleBasedId` = ? AND `delete_flag` = ?";
 			RowMapper<Party> rowMapper = new BeanPropertyRowMapper<Party>(Party.class);
 			return jdbcTemplate.queryForObject(sql, rowMapper, encryptPass, encryptPass, encryptPass, encryptPass, id,
 					delete_flag);
@@ -890,7 +890,7 @@ public class CalcDaoImpl implements CalcDao {
 	@Override
 	public int addPlanInfo(Plan plan, String encryptPass) {
 		try {
-			String sql = "INSERT INTO `plan` (`partyId`,`parentPartyId`,`referenceId`,`name`,`age`,`selectedPlan`,`spouse`,`father`,`mother`,`child1`,`child2`,`child3`,`inLaws`,`grandParent`,`sibilings`,`others`,`created`,`created_by`,`updated`,`updated_by`) VALUES (?,?,?,ENCODE(?,?),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			String sql = "INSERT INTO `plan` (`partyId`,`parentPartyId`,`referenceId`,`name`,`age`,`selectedPlan`,`spouse`,`father`,`mother`,`child1`,`child2`,`child3`,`inLaws`,`grandParent`,`sibilings`,`others`,`created`,`created_by`,`updated`,`updated_by`) VALUES (?,?,?,AES_ENCRYPT(?,?),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 			int result = jdbcTemplate.update(sql, plan.getPartyId(), plan.getParentPartyId(), plan.getReferenceId(),
 					plan.getName(), encryptPass, plan.getAge(), plan.getSelectedPlan(), plan.getSpouse(),
 					plan.getFather(), plan.getMother(), plan.getChild1(), plan.getChild2(), plan.getChild3(),
@@ -918,7 +918,7 @@ public class CalcDaoImpl implements CalcDao {
 	@Override
 	public Plan fetchPlanByReferenceId(String id, String encryptPass) {
 		try {
-			String sql = "SELECT `planId`,`partyId`,`parentPartyId`,`referenceId`,DECODE(`name`,?) name,`age`,`selectedPlan`,`spouse`,`father`,`mother`,`child1`,`child2`,`child3`,`inLaws`,`grandParent`,`sibilings`,`others`,`created`,`updated`,`created_by`,`updated_by` FROM `plan` WHERE `referenceId`= ?";
+			String sql = "SELECT `planId`,`partyId`,`parentPartyId`,`referenceId`,AES_DECRYPT(`name`,?) name,`age`,`selectedPlan`,`spouse`,`father`,`mother`,`child1`,`child2`,`child3`,`inLaws`,`grandParent`,`sibilings`,`others`,`created`,`updated`,`created_by`,`updated_by` FROM `plan` WHERE `referenceId`= ?";
 			RowMapper<Plan> rowMapper = new BeanPropertyRowMapper<Plan>(Plan.class);
 			return jdbcTemplate.queryForObject(sql, rowMapper, encryptPass, id);
 		} catch (EmptyResultDataAccessException e) {
@@ -1286,7 +1286,7 @@ public class CalcDaoImpl implements CalcDao {
 	@Override
 	public List<Plan> fetchPlanByPartyId(long partyId, String encryptPass) {
 		try {
-			String sql = "SELECT `planId`,`partyId`,`parentPartyId`,`referenceId`,DECODE(`name`,?) name,`age`,`selectedPlan`,`spouse`,`father`,`mother`,`child1`,`child2`,`child3`,`inLaws`,`grandParent`,`sibilings`,`others`,`created`,`updated`,`created_by`,`updated_by` FROM `plan` WHERE `partyId`= ? OR `parentPartyId`=?";
+			String sql = "SELECT `planId`,`partyId`,`parentPartyId`,`referenceId`,AES_DECRYPT(`name`,?) name,`age`,`selectedPlan`,`spouse`,`father`,`mother`,`child1`,`child2`,`child3`,`inLaws`,`grandParent`,`sibilings`,`others`,`created`,`updated`,`created_by`,`updated_by` FROM `plan` WHERE `partyId`= ? OR `parentPartyId`=?";
 			RowMapper<Plan> rowMapper = new BeanPropertyRowMapper<Plan>(Plan.class);
 			return jdbcTemplate.query(sql, rowMapper, encryptPass, partyId, partyId);
 		} catch (EmptyResultDataAccessException e) {
@@ -1298,7 +1298,7 @@ public class CalcDaoImpl implements CalcDao {
 	@Override
 	public int modifyPlanInfo(Plan plan, String referenceId, String encryptPass) {
 		try {
-			String sql = "UPDATE `plan` SET `name` = ENCODE(?,?),`age` = ?,`selectedPlan` = ?,`spouse` = ?,`father` = ?,`mother` = ?,`child1` = ?,`child2` = ?,`child3` = ?,`inLaws` = ?,`grandParent` = ?,`sibilings` = ?,`others` = ?,`updated`=?,`updated_by`=? WHERE `referenceId` = ?";
+			String sql = "UPDATE `plan` SET `name` = AES_ENCRYPT(?,?),`age` = ?,`selectedPlan` = ?,`spouse` = ?,`father` = ?,`mother` = ?,`child1` = ?,`child2` = ?,`child3` = ?,`inLaws` = ?,`grandParent` = ?,`sibilings` = ?,`others` = ?,`updated`=?,`updated_by`=? WHERE `referenceId` = ?";
 			int result = jdbcTemplate.update(sql, plan.getName(), encryptPass, plan.getAge(), plan.getSelectedPlan(),
 					plan.getSpouse(), plan.getFather(), plan.getMother(), plan.getChild1(), plan.getChild2(),
 					plan.getChild3(), plan.getInLaws(), plan.getGrandParent(), plan.getSibilings(), plan.getOthers(),
@@ -1327,7 +1327,7 @@ public class CalcDaoImpl implements CalcDao {
 	// encryptPass) {
 	// try {
 	// String sql = "SELECT
-	// `planId`,`partyId`,`parentPartyId`,`superParentId`,`referenceId`,DECODE(`name`,?),`age`,`selectedPlan`,`spouse`,`father`,`mother`,`child1`,`child2`,`child3`,`inLaws`,`grandParent`,`sibilings`,`others`
+	// `planId`,`partyId`,`parentPartyId`,`superParentId`,`referenceId`,AES_DECRYPT(`name`,?),`age`,`selectedPlan`,`spouse`,`father`,`mother`,`child1`,`child2`,`child3`,`inLaws`,`grandParent`,`sibilings`,`others`
 	// FROM `plan` WHERE `superParentId`=?";
 	// RowMapper<Plan> rowMapper = new BeanPropertyRowMapper<Plan>(Plan.class);
 	// return jdbcTemplate.query(sql, rowMapper, encryptPass, superParentId);
@@ -1340,7 +1340,7 @@ public class CalcDaoImpl implements CalcDao {
 	@Override
 	public String fetchEmailIdByPartyId(long partyId, String encryptPass) {
 		try {
-			String sql = "SELECT DECODE(`emailId`,?) emailId FROM `party` WHERE `partyId` = ?";
+			String sql = "SELECT AES_DECRYPT(`emailId`,?) emailId FROM `party` WHERE `partyId` = ?";
 			String result = jdbcTemplate.queryForObject(sql, String.class, encryptPass, partyId);
 			return result;
 		} catch (EmptyResultDataAccessException e) {
@@ -1423,7 +1423,7 @@ public class CalcDaoImpl implements CalcDao {
 	@Override
 	public Party fetchPartyForSignIn(String username, String delete_flag, String encryptPass) {
 		try {
-			String sql = "SELECT `partyId`,`partyStatusId`,`roleBasedId`,`parentPartyId`,DECODE(`emailId`,?) emailId,`password`,DECODE(`userName`,?) userName,DECODE(`phoneNumber`,?) phoneNumber,DECODE(`panNumber`,?) panNumber,`created`,`updated`,`delete_flag`,`created_by`,`updated_by` FROM `party` WHERE `delete_flag`=? AND (DECODE(`emailId`,?) = ? OR DECODE(`panNumber`,?)=? OR DECODE(`phoneNumber`,?)=? OR DECODE(`userName`,?)=?)";
+			String sql = "SELECT `partyId`,`partyStatusId`,`roleBasedId`,`parentPartyId`,AES_DECRYPT(`emailId`,?) emailId,`password`,AES_DECRYPT(`userName`,?) userName,AES_DECRYPT(`phoneNumber`,?) phoneNumber,AES_DECRYPT(`panNumber`,?) panNumber,`created`,`updated`,`delete_flag`,`created_by`,`updated_by` FROM `party` WHERE `delete_flag`=? AND (AES_DECRYPT(`emailId`,?) = ? OR AES_DECRYPT(`panNumber`,?)=? OR AES_DECRYPT(`phoneNumber`,?)=? OR AES_DECRYPT(`userName`,?)=?)";
 			RowMapper<Party> partyMapper = new BeanPropertyRowMapper<Party>(Party.class);
 			return jdbcTemplate.queryForObject(sql, partyMapper, encryptPass, encryptPass, encryptPass, encryptPass,
 					delete_flag, encryptPass, username, encryptPass, username, encryptPass, username, encryptPass,
@@ -1928,7 +1928,7 @@ public class CalcDaoImpl implements CalcDao {
 	@Override
 	public List<CalcQuery> fetchSharedPlanByPostedPartyId(long partyId, String deleteflag, String encryptPass) {
 		try {
-			String sql = "SELECT `calcQueryId`,DECODE(`name`,?) name,`displayName`,`planName`,`age`,`phoneNumber`,`emailId`,`referenceId`,`partyId`,`postedToPartyId`,`receiverName`,`plans`,`url`,`created`,`updated`,`created_by`,`updated_by`,`delete_flag` FROM `calcquery` WHERE `postedToPartyId`= ? AND `delete_flag`=?";
+			String sql = "SELECT `calcQueryId`,AES_DECRYPT(`name`,?) name,`displayName`,`planName`,`age`,`phoneNumber`,`emailId`,`referenceId`,`partyId`,`postedToPartyId`,`receiverName`,`plans`,`url`,`created`,`updated`,`created_by`,`updated_by`,`delete_flag` FROM `calcquery` WHERE `postedToPartyId`= ? AND `delete_flag`=?";
 			RowMapper<CalcQuery> rowMapper = new BeanPropertyRowMapper<CalcQuery>(CalcQuery.class);
 			return jdbcTemplate.query(sql, rowMapper, encryptPass, partyId, deleteflag);
 		} catch (EmptyResultDataAccessException e) {
@@ -1941,7 +1941,7 @@ public class CalcDaoImpl implements CalcDao {
 	public List<CalcQuery> fetchSharedPlanByPartyId(long partyId, String referenceId, String deleteflag,
 			String encryptPass) {
 		try {
-			String sql = "SELECT `calcQueryId`,DECODE(`name`,?) name,`displayName`,`planName`,`age`,`phoneNumber`,`emailId`,`referenceId`,`partyId`,`postedToPartyId`,`receiverName`,`plans`,`url`,`created`,`updated`,`created_by`,`updated_by`,`delete_flag` FROM `calcquery` WHERE `partyId`= ? AND `referenceId`=? AND `delete_flag`=? ORDER BY `updated` DESC";
+			String sql = "SELECT `calcQueryId`,AES_DECRYPT(`name`,?) name,`displayName`,`planName`,`age`,`phoneNumber`,`emailId`,`referenceId`,`partyId`,`postedToPartyId`,`receiverName`,`plans`,`url`,`created`,`updated`,`created_by`,`updated_by`,`delete_flag` FROM `calcquery` WHERE `partyId`= ? AND `referenceId`=? AND `delete_flag`=? ORDER BY `updated` DESC";
 			RowMapper<CalcQuery> rowMapper = new BeanPropertyRowMapper<CalcQuery>(CalcQuery.class);
 			return jdbcTemplate.query(sql, rowMapper, encryptPass, partyId, referenceId, deleteflag);
 		} catch (EmptyResultDataAccessException e) {
@@ -2020,7 +2020,7 @@ public class CalcDaoImpl implements CalcDao {
 	@Override
 	public Investor fetchInvestorByInvId(String invId, String deleteflag, String encryptPass) {
 		try {
-			String sql = "SELECT * FROM (SELECT inv.`invId` invId,DECODE(inv.`fullName`,?) fullName,inv.`displayName` displayName,DECODE(inv.`dob`,?) dob,DECODE(inv.`emailId`,?) emailId,inv.`gender` gender,inv.`password` password,DECODE(inv.`userName`,?) userName,DECODE(inv.`phoneNumber`,?) phoneNumber,inv.`pincode` pincode,inv.`imagePath` imagePath,inv.`partyStatusId` partyStatusId,inv.`created` created,inv.`updated` updated, inv.`created_by` created_by,inv.`updated_by` updated_by, inv.`isVerified` isVerified,inv.`verifiedBy` verifiedBy,inv.`verified` verified,inv.`isMobileVerified` isMobileVerified,inv.`delete_flag` delete_flag,invInt.interestId COL_A,invInt.prodId COL_B,invInt.invId COL_INVID,invInt.scale COL_D,invInt.created COL_E,invInt.updated COL_F,  invInt.created_by COL_G,invInt.updated_by COL_H  ,invInt.delete_flag COL_DELETEFLAG, 'invInt' VALUE FROM investor inv LEFT JOIN invinterest invInt ON (inv.invId = invInt.invId)) AS investor WHERE invId=? AND delete_flag=?";
+			String sql = "SELECT * FROM (SELECT inv.`invId` invId,AES_DECRYPT(inv.`fullName`,?) fullName,inv.`displayName` displayName,AES_DECRYPT(inv.`dob`,?) dob,AES_DECRYPT(inv.`emailId`,?) emailId,inv.`gender` gender,inv.`password` password,AES_DECRYPT(inv.`userName`,?) userName,AES_DECRYPT(inv.`phoneNumber`,?) phoneNumber,inv.`pincode` pincode,inv.`imagePath` imagePath,inv.`partyStatusId` partyStatusId,inv.`created` created,inv.`updated` updated, inv.`created_by` created_by,inv.`updated_by` updated_by, inv.`isVerified` isVerified,inv.`verifiedBy` verifiedBy,inv.`verified` verified,inv.`isMobileVerified` isMobileVerified,inv.`delete_flag` delete_flag,invInt.interestId COL_A,invInt.prodId COL_B,invInt.invId COL_INVID,invInt.scale COL_D,invInt.created COL_E,invInt.updated COL_F,  invInt.created_by COL_G,invInt.updated_by COL_H  ,invInt.delete_flag COL_DELETEFLAG, 'invInt' VALUE FROM investor inv LEFT JOIN invinterest invInt ON (inv.invId = invInt.invId)) AS investor WHERE invId=? AND delete_flag=?";
 			return jdbcTemplate.query(sql, new InvestorExtractor(deleteflag), encryptPass, encryptPass, encryptPass,
 					encryptPass, encryptPass, invId, deleteflag);
 		} catch (DataAccessException e) {
@@ -2034,7 +2034,7 @@ public class CalcDaoImpl implements CalcDao {
 	public CalcQuery fetchCalcQuery(long partyId, String referenceId, String delete_flag, long postedToPartyId,
 			String encryptPass) {
 		try {
-			String sql = "SELECT `calcQueryId`,DECODE(`name`,?) name,`displayName`,`planName`,`age`,`phoneNumber`,`emailId`,`referenceId`,`partyId`,`postedToPartyId`,`receiverName`,`plans`,`url`,`created`,`updated`,`created_by`,`updated_by`,`delete_flag` FROM `calcquery` WHERE `partyId`=? AND `referenceId`=? AND `postedTopartyId`=? AND `delete_flag`=?";
+			String sql = "SELECT `calcQueryId`,AES_DECRYPT(`name`,?) name,`displayName`,`planName`,`age`,`phoneNumber`,`emailId`,`referenceId`,`partyId`,`postedToPartyId`,`receiverName`,`plans`,`url`,`created`,`updated`,`created_by`,`updated_by`,`delete_flag` FROM `calcquery` WHERE `partyId`=? AND `referenceId`=? AND `postedTopartyId`=? AND `delete_flag`=?";
 			RowMapper<CalcQuery> rowMapper = new BeanPropertyRowMapper<CalcQuery>(CalcQuery.class);
 			return jdbcTemplate.queryForObject(sql, rowMapper, encryptPass, partyId, referenceId, postedToPartyId,
 					delete_flag);
@@ -2074,7 +2074,7 @@ public class CalcDaoImpl implements CalcDao {
 	@Override
 	public List<CalcQuery> fetchSharedPlanByRefId(String refId, String delete_flag, String encryptPass) {
 		try {
-			String sql = "SELECT `calcQueryId`,DECODE(`name`,?) name,`displayName`,`planName`,`age`,`phoneNumber`,`emailId`,`referenceId`,`partyId`,`postedToPartyId`,`receiverName`,`plans`,`url`,`created`,`updated`,`created_by`,`updated_by`,`delete_flag` FROM `calcquery` WHERE `referenceId`=? AND `delete_flag`=?";
+			String sql = "SELECT `calcQueryId`,AES_DECRYPT(`name`,?) name,`displayName`,`planName`,`age`,`phoneNumber`,`emailId`,`referenceId`,`partyId`,`postedToPartyId`,`receiverName`,`plans`,`url`,`created`,`updated`,`created_by`,`updated_by`,`delete_flag` FROM `calcquery` WHERE `referenceId`=? AND `delete_flag`=?";
 			RowMapper<CalcQuery> rowMapper = new BeanPropertyRowMapper<CalcQuery>(CalcQuery.class);
 			return jdbcTemplate.query(sql, rowMapper, encryptPass, refId, delete_flag);
 		} catch (EmptyResultDataAccessException e) {

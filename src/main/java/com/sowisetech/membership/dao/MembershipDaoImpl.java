@@ -116,7 +116,7 @@ public class MembershipDaoImpl implements MembershipDao {
 	@Override
 	public int updateSubscriptionPayment(SubscriptionPayment subscriptionPayment, String encryptPass) {
 		try {
-			String sql = "INSERT IGNORE INTO `subscription_payment` (`razorpaySubId`,`razorpayPaymentId`,`amount`,`currency`,`status`,`order_id`,`invoice_id`,`international`,`method`,`amount_refunded`,`amount_transferred`,`refund_status`,`captured`,`description`,`card_id`,`bank`,`wallet`,`vpa`,`emailId`,`contact`,`customer_id`,`token_id`,`fee`,`tax`,`error_code`,`error_description`,`created_at`) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,ENCODE(?,?),ENCODE(?,?),?,?,?,?,?,?,?)";
+			String sql = "INSERT IGNORE INTO `subscription_payment` (`razorpaySubId`,`razorpayPaymentId`,`amount`,`currency`,`status`,`order_id`,`invoice_id`,`international`,`method`,`amount_refunded`,`amount_transferred`,`refund_status`,`captured`,`description`,`card_id`,`bank`,`wallet`,`vpa`,`emailId`,`contact`,`customer_id`,`token_id`,`fee`,`tax`,`error_code`,`error_description`,`created_at`) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,AES_ENCRYPT(?,?),AES_ENCRYPT(?,?),?,?,?,?,?,?,?)";
 			int result = jdbcTemplate.update(sql, subscriptionPayment.getRazorpaySubId(),
 					subscriptionPayment.getRazorpayPaymentId(), subscriptionPayment.getAmount(),
 					subscriptionPayment.getCurrency(), subscriptionPayment.getStatus(),
@@ -140,7 +140,7 @@ public class MembershipDaoImpl implements MembershipDao {
 	@Override
 	public int updateSubPaymentCard(SubPaymentCard subPaymentCard, String encryptPass) {
 		try {
-			String sql = "INSERT INTO `sub_payment_card` (`razorpayPaymentId`,`razorpayCardId`,`name`,`last4`,`network`,`type`,`issuer`,`international`,`emi`,`expiry_month`,`expiry_year`) values (?,?,?,ENCODE(?,?),?,?,?,?,?,ENCODE(?,?),ENCODE(?,?))";
+			String sql = "INSERT INTO `sub_payment_card` (`razorpayPaymentId`,`razorpayCardId`,`name`,`last4`,`network`,`type`,`issuer`,`international`,`emi`,`expiry_month`,`expiry_year`) values (?,?,?,AES_ENCRYPT(?,?),?,?,?,?,?,AES_ENCRYPT(?,?),AES_ENCRYPT(?,?))";
 			int result = jdbcTemplate.update(sql, subPaymentCard.getRazorpayPaymentId(),
 					subPaymentCard.getRazorpayCardId(), subPaymentCard.getName(), subPaymentCard.getLast4(),
 					encryptPass, subPaymentCard.getNetwork(), subPaymentCard.getType(), subPaymentCard.getIssuer(),
@@ -354,7 +354,7 @@ public class MembershipDaoImpl implements MembershipDao {
 	@Override
 	public Party fetchPartyForSignIn(String username, String delete_flag, String encryptPass) {
 		try {
-			String sql = "SELECT `partyId`,`partyStatusId`,`roleBasedId`,`parentPartyId`,DECODE(`emailId`,?) emailId,`password`,DECODE(`userName`,?) userName,DECODE(`phoneNumber`,?) phoneNumber,DECODE(`panNumber`,?) panNumber,`created`,`updated`,`delete_flag`,`created_by`,`updated_by` FROM `party` WHERE `delete_flag`=? AND (DECODE(`emailId`,?) = ? OR DECODE(`panNumber`,?)=? OR DECODE(`phoneNumber`,?)=? OR DECODE(`userName`,?)=?)";
+			String sql = "SELECT `partyId`,`partyStatusId`,`roleBasedId`,`parentPartyId`,AES_DECRYPT(`emailId`,?) emailId,`password`,AES_DECRYPT(`userName`,?) userName,AES_DECRYPT(`phoneNumber`,?) phoneNumber,AES_DECRYPT(`panNumber`,?) panNumber,`created`,`updated`,`delete_flag`,`created_by`,`updated_by` FROM `party` WHERE `delete_flag`=? AND (AES_DECRYPT(`emailId`,?) = ? OR AES_DECRYPT(`panNumber`,?)=? OR AES_DECRYPT(`phoneNumber`,?)=? OR AES_DECRYPT(`userName`,?)=?)";
 			RowMapper<Party> partyMapper = new BeanPropertyRowMapper<Party>(Party.class);
 			return jdbcTemplate.queryForObject(sql, partyMapper, encryptPass, encryptPass, encryptPass, encryptPass,
 					delete_flag, encryptPass, username, encryptPass, username, encryptPass, username, encryptPass,
@@ -368,7 +368,7 @@ public class MembershipDaoImpl implements MembershipDao {
 	@Override
 	public int addOrder(OrderDetail invoice, String encryptPass) {
 		try {
-			String sql = "INSERT INTO `orderdetail` (`orderDetailId`,`roleBasedId`,`emailId`,`phoneNumber`,`name`,`razorpay_plan_id`,`subscription_id`,`razorpay_order_id`,`type`,`status`,`created`,`created_by`, `updated`,`updated_by` ) VALUES (?,?,ENCODE(?,?),ENCODE(?,?),ENCODE(?,?),?,?,?,?,?,?,?,?,?)";
+			String sql = "INSERT INTO `orderdetail` (`orderDetailId`,`roleBasedId`,`emailId`,`phoneNumber`,`name`,`razorpay_plan_id`,`subscription_id`,`razorpay_order_id`,`type`,`status`,`created`,`created_by`, `updated`,`updated_by` ) VALUES (?,?,AES_ENCRYPT(?,?),AES_ENCRYPT(?,?),AES_ENCRYPT(?,?),?,?,?,?,?,?,?,?,?)";
 			int result = jdbcTemplate.update(sql, invoice.getOrderDetailId(), invoice.getRoleBasedId(),
 					invoice.getEmailId(), encryptPass, invoice.getPhoneNumber(), encryptPass, invoice.getName(),
 					encryptPass, invoice.getRazorpay_plan_id(), invoice.getSubscription_id(),
@@ -406,7 +406,7 @@ public class MembershipDaoImpl implements MembershipDao {
 	@Override
 	public OrderDetail fetchOrderDetail(String orderNumber, String encryptPass) {
 		try {
-			String sql = "SELECT `orderDetailId`,`roleBasedId`,DECODE(`emailId`,?) emailId,DECODE(`phoneNumber`,?) phoneNumber,DECODE(`name`,?) name,`razorpay_plan_id`,`status`,`type`,`subscription_id`,`razorpay_order_id`,`created`,`created_by`, `updated`,`updated_by` FROM `orderdetail` WHERE `orderDetailId`=?";
+			String sql = "SELECT `orderDetailId`,`roleBasedId`,AES_DECRYPT(`emailId`,?) emailId,AES_DECRYPT(`phoneNumber`,?) phoneNumber,AES_DECRYPT(`name`,?) name,`razorpay_plan_id`,`status`,`type`,`subscription_id`,`razorpay_order_id`,`created`,`created_by`, `updated`,`updated_by` FROM `orderdetail` WHERE `orderDetailId`=?";
 			RowMapper<OrderDetail> singlePayment = new BeanPropertyRowMapper<OrderDetail>(OrderDetail.class);
 			return jdbcTemplate.queryForObject(sql, singlePayment, encryptPass, encryptPass, encryptPass, orderNumber);
 		} catch (EmptyResultDataAccessException e) {

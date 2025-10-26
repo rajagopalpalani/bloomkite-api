@@ -17,7 +17,7 @@ CREATE TABLE `investor` (
 	`emailId` VARCHAR(250) NOT NULL,
 	`gender` VARCHAR(1) NOT NULL,
 	`password` VARCHAR(100) NOT NULL,
-	`phoneNumber` VARCHAR(15) NOT NULL,
+	`phoneNumber` VARCHAR(100) NOT NULL,
 	`pincode` VARCHAR(6) NOT NULL,
 	`partyStatusId` BIGINT(1) NOT NULL,
 	`created` TIMESTAMP NULL DEFAULT NULL,
@@ -27,6 +27,8 @@ CREATE TABLE `investor` (
 	`verifiedBy` VARCHAR(50) NULL DEFAULT NULL,
 	`verified` TIMESTAMP NULL DEFAULT NULL,
 	`isMobileVerified` INT(2) NULL DEFAULT '0',
+	`created_by` VARCHAR(50) NULL DEFAULT NULL,
+	`updated_by` VARCHAR(50) NULL DEFAULT NULL,
 	PRIMARY KEY (`invId`)
 );
 

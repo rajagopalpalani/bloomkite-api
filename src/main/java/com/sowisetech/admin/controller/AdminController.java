@@ -246,6 +246,8 @@ public class AdminController {
 	 * @param adminRequest
 	 * @return ResponseEntity<?> SUCCESS_CODE or ERROR_CODE
 	 */
+	@ApiOperation(value = "Admin Signup", 
+	              notes = "Register a new admin user with email, name, and password.")
 	@RequestMapping(value = "/adminSignup", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON, consumes = MediaType.APPLICATION_JSON)
 	public ResponseEntity<?> adminSignup(@NonNull @RequestBody AdminRequest adminRequest) {
 		HashMap<String, HashMap<String, String>> errors = new HashMap<String, HashMap<String, String>>();

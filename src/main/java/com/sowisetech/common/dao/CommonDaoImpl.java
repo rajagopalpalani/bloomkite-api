@@ -59,7 +59,7 @@ public class CommonDaoImpl implements CommonDao {
 	public long addMailMessage(String to, String subject, String originalContent, String fromUser, int noOfAttempt,
 			String encryptPass) {
 		try {
-			String sql = "INSERT INTO `mailmessage` (`to`,`subject`,`message`,`fromUser`,`noOfAttempt`) values (ENCODE(?,?),?,?,?,?)";
+			String sql = "INSERT INTO `mailmessage` (`to`,`subject`,`message`,`fromUser`,`noOfAttempt`) values (AES_ENCRYPT(?,?),?,?,?,?)";
 			KeyHolder holder = new GeneratedKeyHolder();
 			jdbcTemplate.update(new PreparedStatementCreator() {
 				@Override
@@ -98,7 +98,7 @@ public class CommonDaoImpl implements CommonDao {
 	public int addActivationLink(String emailId, String url, String verifykey, String subject, String encryptPass) {
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		try {
-			String sql = "INSERT INTO `activation_link` (`emailId`,`link`,`created`,`key`,`subject`) values (ENCODE(?,?),?,?,?,?)";
+			String sql = "INSERT INTO `activation_link` (`emailId`,`link`,`created`,`key`,`subject`) values (AES_ENCRYPT(?,?),?,?,?,?)";
 			int result = jdbcTemplate.update(sql, emailId, encryptPass, url, timestamp, verifykey, subject);
 			return result;
 		} catch (DataAccessException e) {
@@ -110,7 +110,7 @@ public class CommonDaoImpl implements CommonDao {
 	@Override
 	public String fetchLatestKeyByEmailIdAndSub(String emailId, String mailSub, String encryptPass) {
 		try {
-			String sql = "SELECT `key` FROM `activation_link` WHERE DECODE(`emailId`,?)= ? AND `subject` = ? ORDER BY `created` DESC LIMIT 1";
+			String sql = "SELECT `key` FROM `activation_link` WHERE AES_DECRYPT(`emailId`,?)= ? AND `subject` = ? ORDER BY `created` DESC LIMIT 1";
 			String key = jdbcTemplate.queryForObject(sql, String.class, encryptPass, emailId, mailSub);
 			return key;
 		} catch (DataAccessException e) {

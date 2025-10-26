@@ -776,6 +776,8 @@ public class AdvisorController {
 	 * @return ResponseEntity<String> contains the either the Result of addition of
 	 *         advisor or ErrorResponse
 	 */
+	@ApiOperation(value = "User Signup - Supports Investor, Advisor, and Blogger signup", 
+	              notes = "Use roleId in the request to specify user type. The endpoint handles multiple user types based on roleId parameter.")
 	@RequestMapping(value = "/signup", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON, consumes = MediaType.APPLICATION_JSON)
 	public ResponseEntity<?> advSignup(@RequestBody AdvisorRequest advisorRequest) {
 
@@ -1350,6 +1352,8 @@ public class AdvisorController {
 	 * @return ResponseEntity<String> contains the either the Result of verified
 	 *         signup or ErrorResponse
 	 */
+	@ApiOperation(value = "Verify Signup", 
+	              notes = "Verify user signup using the verification key sent via email.")
 	@RequestMapping(value = "/verify/signup", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON)
 	public ResponseEntity<?> verifySignup(@RequestParam String key) {
 		if (key == null) {
